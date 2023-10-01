@@ -39,23 +39,23 @@ Submission
 
 -- QUERRY HERE
 
-WITH dateData AS (
+SELECT
+  year,
+  month,
+  COUNT(Patent_Title) AS total_patent
+FROM (
   SELECT
     LEFT(Grant_or_Publication_Date, 4) AS year,
     IF(SUBSTR(Grant_or_Publication_Date, 5, 1) = '0',
-       SUBSTR(Grant_or_Publication_Date, 6, 1),
-       SUBSTR(Grant_or_Publication_Date, 5, 2)
+      SUBSTR(Grant_or_Publication_Date, 6, 1),
+      SUBSTR(Grant_or_Publication_Date, 5, 2)
     ) AS month,
+    Patent_Title
   FROM `patents-public-data.uspto_oce_cancer.publications`
   WHERE
     Patent_Title LIKE '%data mining%'
     AND CAST(LEFT(Grant_or_Publication_Date, 4) AS INT64) >= 2012
 )
-SELECT
-  year,
-  month,
-  COUNT(Patent_Title) AS total_patent -- BINGUNG DISINI
-FROM dateData, `patents-public-data.uspto_oce_cancer.publications`
 GROUP BY
   year,
   month
